@@ -53,7 +53,9 @@ If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrus
 * The hints that need to be set are:
 <code>
 set hint.sdhci_pci.0.disabled="1"
+
 set hint.sdhci_pci.1.disabled="1"
+
 set hint.hpet.0.clock="0"
 </code>
 
@@ -63,9 +65,13 @@ set hint.hpet.0.clock="0"
 
 <code>
 echo 'legal.intel_ipw.license_ack="1"' >> /boot/loader.conf
+
 echo 'legal.intel_iwi.license_ack="1"' >> /boot/loader.conf
+
 echo 'hint.sdhci_pci.0.disabled="1"' >> /boot/loader.conf.local
+
 echo 'hint.sdhci_pci.1.disabled="1"' >> /boot/loader.conf.local
+
 echo 'hint.hpet.0.clock="0"' >> /boot/loader.conf.local
 </code>
 
@@ -85,10 +91,15 @@ echo 'hint.hpet.0.clock="0"' >> /boot/loader.conf.local
 
 <code>
 scp ZotacModule-FreeBSD11.1-rtlv194.01/if_re.ko admin@[pfsenseip]:/boot/kernel/
+
 ssh admin@[pfsenseip]
+
 cd /boot/kernel
+
 chown 0555 if_re.ko
+
 echo 'if_re_load="YES"' >>/boot/loader.conf.local
+
 reboot
 </code>
 
@@ -109,14 +120,23 @@ kldstat
 
 <code>
 fetch -o /tmp ftp://ftp.freebsd.org/pub/`uname -s`/releases/`uname -m`/`uname -r | cut -d'-' -f1,2`/src.txz
+
 tar -C / -xvf /tmp/src.txz
+
 pkg install curl
+
 curl -o /tmp/rtlv194.tgz http://12244.wpc.azureedge.net/8012244/drivers/rtdrivers/cn/nic/0007-rtl_bsd_drv_v194.01.tgz
+
 tar -xf /tmp/rtlv194.tgz -C /tmp/
+
 cp /tmp/rtl_bsd_drv_v194.01/if_re* /usr/src/sys/dev/re/
+
 cp /tmp/rtl_bsd_drv_v194.01/Makefile /usr/src/sys/dev/re/
+
 cd /usr/src/sys/modules/re/
+
 make
+
 passwd
 </code>
 
@@ -140,9 +160,13 @@ scp /usr/src/sys/modules/re/if_re.ko root@pfsense:/boot/kernel/
 
 <code>
 ssh admin@[pfsenseip]
+
 cd /boot/kernel
+
 chown 0555 if_re.ko
+
 echo 'if_re_load="YES"' >>/boot/loader.conf.local
+
 reboot
 </code>
 
