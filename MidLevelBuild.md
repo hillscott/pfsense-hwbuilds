@@ -22,6 +22,7 @@ If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrus
 | $9.99      | Optional: CableCreation USB 3.0 RJ45 Network Adapter GigE     | [Amazon](http://amzn.to/2EV66z7) |
 
 **Total Price: $262.60-272.59**
+
 **NOTES:**
 * The ZOTAC supports M.2 Disks, but to install it, you have to void your warranty, so lets just not do that, and install a 2.5" SSD. Disk speed doesn't matter anyway for this. 
 * Be careful to follow the directions on installing the thermal tape to the SSD and RAM. There are NO fans in this box, so failure to install the thermal tape may result in things melting.
@@ -258,6 +259,7 @@ kldstat
  * Once you've configured the Oinkmaster code + checked ETOpen, click "Update" 
 * Services -> Suricata -> Interfaces
  * Add one, I do WAN filtering, you can also filter LAN for more security (every interface that you filter requires more memory and processing power). This build can certainly support WAN/LAN filtering, and even some other interfaces.
+
 **WAN Interface Settings**
  * Enable DNS Log (if you like)
  * Enable Stats Log (useful)
@@ -290,6 +292,7 @@ kldstat
  * Parent: em1 (LAN)
  * VLAN Tag: [Pick some small #]
  * Description: Guest
+
 WARNING!! WARNING!! DANGER WILL ROBINSON!! 
 --------> Suricata will prevent VLAN tagged interfaces from functioning, if it is scanning an interface with tags enabled. The parent interface will work fine, but the tagged interface will NOT pass traffic. Stop Suricata on the parent interface... and the tagged interface will immediately start working again. I'm still researching this issue. Some discussion on an outdated version here: [security-onion](https://github.com/Security-Onion-Solutions/security-onion/wiki/VLAN-Traffic) For now, you may need to have your switch send untagged VLANs to a separate physical interface to work-around the issue (if you even need a network outside of WAN/LAN).
 

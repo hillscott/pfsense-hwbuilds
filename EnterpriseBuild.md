@@ -25,6 +25,7 @@ _I say "over" as I haven't reached the limits of this build yet_. I need to take
 | $44.99     | Silicon Power 120GB M.2 2280 SSD                              | [Amazon](http://amzn.to/2BUAgj5) |
 
 **Total Price: $554.78**
+
 **NOTES:**
 * The Motherboard included in the XPC Cube SH110R4 has no PCIex4 slot. It does have on-board graphics and an x16 slot though, so I used the x16 slot for the x4 NIC, and that works just fine. All PCIe slots can be used by a smaller card with no performance / safety issues.
 * You will likely have to flash the firmware on the motherboard to get "full" Kaby Lake support. This is fairly easy though. 
@@ -197,6 +198,7 @@ _I say "over" as I haven't reached the limits of this build yet_. I need to take
  * Parent: em1 (LAN)
  * VLAN Tag: [Pick some small #]
  * Description: Guest
+
 WARNING!! WARNING!! DANGER WILL ROBINSON!! 
 --------> Suricata will prevent VLAN tagged interfaces from functioning, if it is scanning an interface with tags enabled. The parent interface will work fine, but the tagged interface will NOT pass traffic. Stop Suricata on the parent interface... and the tagged interface will immediately start working again. I'm still researching this issue. Some discussion on an outdated version here: [security-onion](https://github.com/Security-Onion-Solutions/security-onion/wiki/VLAN-Traffic) For now, you may need to have your switch send untagged VLANs to a separate physical interface to work-around the issue (if you even need a network outside of WAN/LAN).
 
