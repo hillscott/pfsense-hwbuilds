@@ -226,38 +226,38 @@ kldstat
 
 **Suricata / Intrusion Prevention**
 * Services -> Suricata
--- Lots of configuration here, and it's the entire reason for the high-powered hardware
+ * Lots of configuration here, and it's the entire reason for the high-powered hardware
 * Services -> Suricata -> Global Settings
--- I recommend ETOpen and Snort VRT. I pay the $30/year for Snort rules, the "registered" set is the same, just always 30-days behind
--- Get your "Oinkmaster" code from the snort webpage, and enter the snapshot name here (version 2990) at time of writing
--- Update Interval -> I do 12 hours, but then I have the pay rules, up to you
--- Update Start time -> Pick something random to reduce load on their servers, like 00:32
--- Remove Blocked Hosts Interval -> I do 12 hours, use good judgement at first. 
--- Make sure "Settings will not be removed during package deinstallation" is checked
+ * I recommend ETOpen and Snort VRT. I pay the $30/year for Snort rules, the "registered" set is the same, just always 30-days behind
+ * Get your "Oinkmaster" code from the snort webpage, and enter the snapshot name here (version 2990) at time of writing
+ * Update Interval -> I do 12 hours, but then I have the pay rules, up to you
+ * Update Start time -> Pick something random to reduce load on their servers, like 00:32
+ * Remove Blocked Hosts Interval -> I do 12 hours, use good judgement at first. 
+ * Make sure "Settings will not be removed during package deinstallation" is checked
 * Services -> Suricata -> Updates
--- Once you've configured the Oinkmaster code + checked ETOpen, click "Update" 
+ * Once you've configured the Oinkmaster code + checked ETOpen, click "Update" 
 * Services -> Suricata -> Interfaces
--- Add one, I do WAN filtering, you can also filter LAN for more security (every interface that you filter requires more memory and processing power). This build can certainly support WAN/LAN filtering, and even some other interfaces.
+ * Add one, I do WAN filtering, you can also filter LAN for more security (every interface that you filter requires more memory and processing power). This build can certainly support WAN/LAN filtering, and even some other interfaces.
 **WAN Interface Settings**
--- Enable DNS Log (if you like)
--- Enable Stats Log (useful)
--- Block Offenders - You want this on. I recommend IPS Mode: "Legacy" on this hardware. I had random reboots with Inline on the RealTek hardware
--- Max Pending Packets: 2048 (the default is too low)
+ * Enable DNS Log (if you like)
+ * Enable Stats Log (useful)
+ * Block Offenders - You want this on. I recommend IPS Mode: "Legacy" on this hardware. I had random reboots with Inline on the RealTek hardware
+ * Max Pending Packets: 2048 (the default is too low)
 
 **WAN Categories**
--- CHECK Auto-enable rules required for checked flowbits
--- CHECK Use rules from one of three pre-defined Snort IPS policies
--- IPS Policy Selection: Up to you, but I have tested / am happy with "Security"
--- IPS Policy Mode: "Policy" 
--- Now you'll need to check the "emerging / ETOpen" rule categories that you want on top of Snort rules. 
--- I have included a file suricata-enable.conf which is a listing of my recommendations
--- Be sure to click SAVE when done
+ * CHECK Auto-enable rules required for checked flowbits
+ * CHECK Use rules from one of three pre-defined Snort IPS policies
+ * IPS Policy Selection: Up to you, but I have tested / am happy with "Security"
+ * IPS Policy Mode: "Policy" 
+ * Now you'll need to check the "emerging / ETOpen" rule categories that you want on top of Snort rules. 
+ * I have included a file suricata-enable.conf which is a listing of my recommendations
+ * Be sure to click SAVE when done
 
 **SID Management**
 * Services -> Suricata -> SID Mgmt
 * OPTIONAL: I have provided "suricata-dropsid.conf" which allows you to force all auto-enabled rules to have a DROP action attached to them.
--- If using this feature... check the "Enable automatic management of rule state and content using configuration files"
--- Select it in the drop down for "Drop SID File", check REBUILD and click SAVE
+ * If using this feature... check the "Enable automatic management of rule state and content using configuration files"
+ * Select it in the drop down for "Drop SID File", check REBUILD and click SAVE
 
 **Filter START**
 * Services -> Suricata -> Interfaces
@@ -267,34 +267,34 @@ kldstat
 **VLANs**
 * Interfaces -> VLANs (if you want a Guest Wifi / some other sub-interface)
 * Add
--- Parent: em1 (LAN)
--- VLAN Tag: [Pick some small #]
--- Description: Guest
+ * Parent: em1 (LAN)
+ * VLAN Tag: [Pick some small #]
+ * Description: Guest
 WARNING!! WARNING!! DANGER WILL ROBINSON!! 
 --------> Suricata will prevent VLAN tagged interfaces from functioning, if it is scanning an interface with tags enabled. The parent interface will work fine, but the tagged interface will NOT pass traffic. Stop Suricata on the parent interface... and the tagged interface will immediately start working again. I'm still researching this issue. Some discussion on an outdated version here: [security-onion](https://github.com/Security-Onion-Solutions/security-onion/wiki/VLAN-Traffic) For now, you may need to have your switch send untagged VLANs to a separate physical interface to work-around the issue (if you even need a network outside of WAN/LAN).
 
 **Interface Setup (for a Guest Wifi network as an example)**
 * Interfaces -> Interface Assignments
--- Available network ports: [Select Guest], Add
--- It will now show up as OPT1, click on OPT1
--- Rename it GUEST
--- Check ENABLE Interface
--- IPv4 Configuration Type -> Static IPv4
--- Assign an IP on a different subnet from your LAN (with appropriate netmask)
--- Apply
+ * Available network ports: [Select Guest], Add
+ * It will now show up as OPT1, click on OPT1
+ * Rename it GUEST
+ * Check ENABLE Interface
+ * IPv4 Configuration Type -> Static IPv4
+ * Assign an IP on a different subnet from your LAN (with appropriate netmask)
+ * Apply
 
 **DHCP Server setup for the New Interface**
 * Services -> DHCP Server -> Click on GUEST
--- CHECK Enable DHCP server on GUEST interface
--- Define a range of IPs within your GUEST subnet
+ * CHECK Enable DHCP server on GUEST interface
+ * Define a range of IPs within your GUEST subnet
 
 **Firewall setup for the New Interface**
 * Firewall Rules -> GUEST
--- Add (at bottom)
--- Pass
--- Destination: WAN net
--- Protocol: Any
--- SAVE, Apply
+ * Add (at bottom)
+ * Pass
+ * Destination: WAN net
+ * Protocol: Any
+ * SAVE, Apply
 
 _Now setup the new SSID / VLAN in your AP interface_
 
