@@ -1,7 +1,10 @@
 # Mid-Level Build
 If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrusion Prevention, even if it's with delayed blocking (instead of Inline), and you don't have $560 + tax, or just are scared by installing processors... or power usage, or fans / noise, this build may be for you. 
+
 **Cost**: ~$275 + tax (and maybe shipping)
+
 **Power Consumption**: 7-9watts (120v)
+
 **Build Difficulty**:
 * _Physical_ - Super easy, remove a few screws, drop in a stick of memory + a disk - and go. 
 * _Technical_ - We have to build a kernel module. Or you have to trust mine. It's not hard if you take it step by step, but the words "kernel module" seem to scare some people. 

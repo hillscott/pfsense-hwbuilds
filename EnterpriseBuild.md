@@ -1,8 +1,12 @@
 # Enterprise Build
 If you need _over_ 125Mb/s Up/Down Throughput, with full Inline (as in block it before it gets through) Intrusion Prevention + OpenVPN... you need this build. 
+
 _I say "over" as I haven't reached the limits of this build yet_. I need to take it to a GigE pipe to see how hard I can push it. This build also has 5x GigE Ethernet ports.
+
 **Cost**: ~$560 + tax (and maybe shipping)
+
 **Power Consumption**: 25-30watts (120v)
+
 **Build Difficulty**: 
 * _Physical_ - If you've ever built a PC, not hard. If you haven't, remain calm... you'll have to install the processor, but it's not that bad. 
 * _Technical_ - Super easy, install and you're off to the races.
