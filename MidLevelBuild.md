@@ -56,9 +56,11 @@ set hint.sdhci_pci.0.disabled="1"
 set hint.sdhci_pci.1.disabled="1"
 set hint.hpet.0.clock="0"
 </code>
+
 * This will allow the install to go through without hanging for minutes on end
 * After accepting the defaults (once it starts asking you to install), you'll be asked if you want to enter the console. Select **YES**
 * Run the following commands:
+
 <code>
 echo 'legal.intel_ipw.license_ack="1"' >> /boot/loader.conf
 echo 'legal.intel_iwi.license_ack="1"' >> /boot/loader.conf
@@ -66,6 +68,7 @@ echo 'hint.sdhci_pci.0.disabled="1"' >> /boot/loader.conf.local
 echo 'hint.sdhci_pci.1.disabled="1"' >> /boot/loader.conf.local
 echo 'hint.hpet.0.clock="0"' >> /boot/loader.conf.local
 </code>
+
 * Now type exit when the hardware reboots, remove the USB key. It should now boot pfsense.
 
 **pfSense Configuration**
@@ -79,6 +82,7 @@ echo 'hint.hpet.0.clock="0"' >> /boot/loader.conf.local
 **Using my module...**
 * If you are going to build it, skip to the next section.
 * To use the module in this repository, you are simply going to want to copy it over and enable it with:
+
 <code>
 scp ZotacModule-FreeBSD11.1-rtlv194.01/if_re.ko admin@[pfsenseip]:/boot/kernel/
 ssh admin@[pfsenseip]
@@ -87,10 +91,13 @@ chown 0555 if_re.ko
 echo 'if_re_load="YES"' >>/boot/loader.conf.local
 reboot
 </code>
+
 * Once the zbox comes back up, you can verify that you are using the new module by running:
+
 <code>
 kldstat
 </code>
+
 * You should see something like: _2    1 0xffffffff82e3f000 80900    if_re.ko_
 
 **Building it yourself...**
@@ -99,6 +106,7 @@ kldstat
 * Now Create a new FreeBSD machine in your platform, and select the downloaded image as the disk. This saves you the trouble of having to actually install FreeBSD, it'll be ready to go. 
 * Now boot the VM up, and login to it with root, and no password
 * Run the following commands (you may want to check RealTek's site for a newer driver):
+
 <code>
 fetch -o /tmp ftp://ftp.freebsd.org/pub/`uname -s`/releases/`uname -m`/`uname -r | cut -d'-' -f1,2`/src.txz
 tar -C / -xvf /tmp/src.txz
@@ -111,19 +119,25 @@ cd /usr/src/sys/modules/re/
 make
 passwd
 </code>
+
 * The last command is to set a root password (pick something for the moment - you will only use it once)
 * Now open /etc/ssh/sshd_config with either vim / nano / emacs... whatever
 * Enable "PermitRootLogin"
 * Save and Exit 
+
 <code>
 sh /etc/rd.d/sshd onestart
 </code>
+
 * Now you need to pull the compiled module out of the vm, locally, and transfer it up to the zbox.
 * For example:
+
 <code>
 scp /usr/src/sys/modules/re/if_re.ko root@pfsense:/boot/kernel/
 </code>
+
 * Once it's on the ZBOX, ssh into the ZBOX and run the following:
+
 <code>
 ssh admin@[pfsenseip]
 cd /boot/kernel
@@ -131,10 +145,13 @@ chown 0555 if_re.ko
 echo 'if_re_load="YES"' >>/boot/loader.conf.local
 reboot
 </code>
+
 * Once the zbox comes back up, you can verify that you are using the new module by running:
+
 <code>
 kldstat
 </code>
+
 * You should see something like: _2    1 0xffffffff82e3f000 80900    if_re.ko_
 
 **Extra Steps for USB3 Ethernet Adapter**
