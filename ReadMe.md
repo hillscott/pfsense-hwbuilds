@@ -53,8 +53,8 @@ Or... if you work in International Development, for sure don't give me money, ju
 Within this repository (and linked here), will be the various builds that I've done, with details on their performance. I will also walk-through the big features, that I view as important for a serious / enterprise network. I won't walk through _every_ feature. That's insane, RTFM. Without further adieu though...
 
 ### [Enterprise Build](./EnterpriseBuild.md)
-If you need _over_ 125Mb/s Up/Down Throughput, with full Inline (as in block it before it gets through) Intrusion Prevention + OpenVPN... you need this build. 
-_I say "over" as I haven't reached the limits of this build yet_. I need to take it to a GigE pipe to see how hard I can push it. This build also has 5x GigE Ethernet ports.
+If you need _over_ 500Mb/s Up/Down Throughput, with full Inline (as in block it before it gets through) Intrusion Prevention + OpenVPN... you need this build. 
+This build also has 5x GigE Ethernet ports.
 **Cost**: ~$560 + tax (and maybe shipping)
 **Power Consumption**: 25-30watts (120v)
 **Build Difficulty**: 
@@ -64,11 +64,11 @@ _I say "over" as I haven't reached the limits of this build yet_. I need to take
 **Downsides**: It's the size of a media PC, and has a fan (that you probably won't hear)
 
 ### [Mid-Level SILENT Build](./MidLevelBuild.md)
-If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrusion Prevention, even if it's with delayed blocking (instead of Inline), and you don't have $560 + tax, or just are scared by installing processors... or power usage, or fans / noise, this build may be for you. 
+If you need _under_ 500Mb/s Up/Down Throughout with OpenVPN, and want some Intrusion Prevention, even if it's with delayed blocking (instead of Inline), and you don't have $560 + tax, or just are scared by installing processors... or power usage, or fans / noise, this build may be for you. 
 **Cost**: ~$275 + tax (and maybe shipping)
 **Power Consumption**: 7-9watts (120v)
 **Build Difficulty**:
 * _Physical_ - Super easy, remove a few screws, drop in a stick of memory + a disk - and go. 
-* _Technical_ - We have to build a kernel module. Or you have to trust mine. It's not hard if you take it step by step, but the words "kernel module" seem to scare some people. 
+* _Technical_ - This has gotten much easier over time, no more kernel module compilation! Just normal pfSense configuration is required. 
 
-**Downsides**: It's not going to be good enough for a full 100Mb/s Up/Down pipe, unless you're willing to take the max speed hit. These words may make you laugh on your whopping 5Mbit/sec DSL line though - so this may be for you.
+**Downsides**: It's not going to be good enough for a full 1000Mb/s Up/Down pipe, unless you're willing to take the max speed hit, or not do Intrusion Prevention. These words may make you laugh on your whopping 5Mbit/sec DSL line though - so this may be for you. I also wouldn't recommend this build if you are planning to be slamming the box non-stop with max traffic. It's passively cooled, so that would likely overheat it.

@@ -1,5 +1,5 @@
 # Mid-Level Build
-If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrusion Prevention, even if it's with delayed blocking (instead of Inline), and you don't have $560 + tax, or just are scared by installing processors... or power usage, or fans / noise, this build may be for you. 
+If you need _under_ 500Mb/s Up/Down Throughout with OpenVPN, and want some Intrusion Prevention, even if it's with delayed blocking (instead of Inline), and you don't have $560 + tax, or just are scared by installing processors... or power usage, or fans / noise, this build may be for you. 
 
 **Cost**: ~$275 + tax (and maybe shipping)
 
@@ -7,9 +7,9 @@ If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrus
 
 **Build Difficulty**:
 * _Physical_ - Super easy, remove a few screws, drop in a stick of memory + a disk - and go. 
-* _Technical_ - We have to build a kernel module. Or you have to trust mine. It's not hard if you take it step by step, but the words "kernel module" seem to scare some people. 
+* _Technical_ - Super easy, install and you're off to the races.
 
-**Downsides**: It's not going to be good enough for a full 100Mb/s Up/Down pipe, unless you're willing to take the max speed hit, or not do Intrusion Prevention. These words may make you laugh on your whopping 5Mbit/sec DSL line though - so this may be for you.
+**Downsides**: It's not going to be good enough for a full 1000Mb/s Up/Down pipe, unless you're willing to take the max speed hit, or not do Intrusion Prevention. These words may make you laugh on your whopping 5Mbit/sec DSL line though - so this may be for you. I also wouldn't recommend this build if you are planning to be slamming the box non-stop with max traffic. It's passively cooled, so that would likely overheat it.
 
 ## Hardware List
 **_Prices are accurate as of the build in early 2018_**
@@ -20,13 +20,15 @@ If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrus
 | $54.62     | Crucial 4GB DDR3-1866 SODIMM 204-pin                          | [Amazon](http://amzn.to/2F1KcGk) |
 | $37.99     | ADATA 64GB SATA III SSD                                       | [Amazon](http://amzn.to/2F2dXHf) |
 | $9.99      | Optional: CableCreation USB 3.0 RJ45 Network Adapter GigE     | [Amazon](http://amzn.to/2EV66z7) |
+| $37.69     | Optional: Alfa AWUSO36NHA - Wireless B/G/N Atheros USB Adapter| [Amazon](https://amzn.to/2RzB1WO)|
 
-**Total Price: $262.60-272.59**
+**Total Price: $262.60-310.28**
 
 **NOTES:**
 * The ZOTAC supports M.2 Disks, but to install it, you have to void your warranty, so lets just not do that, and install a 2.5" SSD. Disk speed doesn't matter anyway for this. 
 * Be careful to follow the directions on installing the thermal tape to the SSD and RAM. There are NO fans in this box, so failure to install the thermal tape may result in things melting.
-* The Realtek drivers built into FreeBSD are... well terrible. So we will fix that below. You can eiter trust a pre-built driver (by me), or build it yourself with the directions that follow.
+* The Realtek drivers built into FreeBSD used to be terrible. They have come a LONG way. I no longer recommend compiling your own kernel module.
+* If you are wondering why you would ever need to buy a Wifi adapter, when there is Wifi built-into the ZBOX, it's because the built-in Wifi is Intel (IWM Module) Wifi. There is no support at all for that in pfSense, and even in FreeBSD it has very limited support.
 
 ## Hardware Build Instructions
 **Install the Hardware**
@@ -53,112 +55,14 @@ If you need _under_ 70Mb/s Up/Down Throughout with OpenVPN, and want some Intrus
 * Follow the directions in the [pfsense docs](https://doc.pfsense.org/index.php/Writing_Disk_Images) to write it to your USB Flash Drive
 * Once the flash drive is ready, insert the Flash Drive into the front of the ZBOX
 * Turn on the ZBOX, it should auto-boot from your flash drive
-* You will **NOT** be able to accept the default and have this install work, the moment that the pfSense logo appears, you are going to want to enter the "console" to "set hints"
-* The hints that need to be set are:
-```
-set hint.sdhci_pci.0.disabled="1"
-set hint.sdhci_pci.1.disabled="1"
-set hint.hpet.0.clock="0"
-```
-
-* This will allow the install to go through without hanging for minutes on end
 * After accepting the defaults (once it starts asking you to install), you'll be asked if you want to enter the console. Select **YES**
-* Run the following commands:
-
-```
-echo 'legal.intel_ipw.license_ack="1"' >> /boot/loader.conf
-echo 'legal.intel_iwi.license_ack="1"' >> /boot/loader.conf
-echo 'hint.sdhci_pci.0.disabled="1"' >> /boot/loader.conf.local
-echo 'hint.sdhci_pci.1.disabled="1"' >> /boot/loader.conf.local
-echo 'hint.hpet.0.clock="0"' >> /boot/loader.conf.local
-```
-
 * Now type exit when the hardware reboots, remove the USB key. It should now boot pfsense.
 
 **pfSense Configuration**
 * Go through the setup wizard (name things as you like, select which interface is WAN / LAN etc)
 * You may be asked to upgrade if there's a new version, go ahead and do that
-* Now we need to address the Realtek driver being terrible... so once you're back into the web interface, enable SSH in System -> Advanced
-* Now you have a choice:
-* Use the Realtek driver included in this repository (easy) or build it yourself (harder, but more secure practice)
-* If you _don't_ do this. You can still use the ZBOX with pfSense... but expect absolutely horrible performance. On the order of 70 Megabit/ps **with no Intrusion Prevention** also expect things to crash if you do try to use Intrusion Prevention without installing the module.
 
-**Using my module...**
-* If you are going to build it, skip to the next section.
-* To use the module in this repository, you are simply going to want to copy it over and enable it with:
-
-```
-scp ZotacModule-FreeBSD11.1-rtlv194.01/if_re.ko admin@[pfsenseip]:/boot/kernel/
-ssh admin@[pfsenseip]
-cd /boot/kernel
-chown 0555 if_re.ko
-echo 'if_re_load="YES"' >>/boot/loader.conf.local
-reboot
-```
-
-* Once the zbox comes back up, you can verify that you are using the new module by running:
-
-```
-kldstat
-```
-
-* You should see something like: _2    1 0xffffffff82e3f000 80900    if_re.ko_
-
-**Building it yourself...**
-* If you've installed the module already from this respository, skip this section.
-* You're going to need a server / desktop / laptop that you can run some kind of Virtualization on. I use KVM on my linux box, but just about anything is supported. On the device that you'll be doing the virtualization with, download the FreeBSD image that matches your virtualization platform [here](https://download.freebsd.org/ftp/releases/VM-IMAGES/11.1-RELEASE/amd64/Latest/)
-* Now Create a new FreeBSD machine in your platform, and select the downloaded image as the disk. This saves you the trouble of having to actually install FreeBSD, it'll be ready to go. 
-* Now boot the VM up, and login to it with root, and no password
-* Run the following commands (you may want to check RealTek's site for a newer driver):
-
-```
-fetch -o /tmp ftp://ftp.freebsd.org/pub/`uname -s`/releases/`uname -m`/`uname -r | cut -d'-' -f1,2`/src.txz
-tar -C / -xvf /tmp/src.txz
-pkg install curl
-curl -o /tmp/rtlv194.tgz http://12244.wpc.azureedge.net/8012244/drivers/rtdrivers/cn/nic/0007-rtl_bsd_drv_v194.01.tgz
-tar -xf /tmp/rtlv194.tgz -C /tmp/
-cp /tmp/rtl_bsd_drv_v194.01/if_re* /usr/src/sys/dev/re/
-cp /tmp/rtl_bsd_drv_v194.01/Makefile /usr/src/sys/dev/re/
-cd /usr/src/sys/modules/re/
-make
-passwd
-```
-
-* The last command is to set a root password (pick something for the moment - you will only use it once)
-* Now open /etc/ssh/sshd_config with either vim / nano / emacs... whatever
-* Enable "PermitRootLogin"
-* Save and Exit 
-
-```
-sh /etc/rd.d/sshd onestart
-```
-
-* Now you need to pull the compiled module out of the vm, locally, and transfer it up to the zbox.
-* For example:
-
-```
-scp /usr/src/sys/modules/re/if_re.ko root@pfsense:/boot/kernel/
-```
-
-* Once it's on the ZBOX, ssh into the ZBOX and run the following:
-
-```
-ssh admin@[pfsenseip]
-cd /boot/kernel
-chown 0555 if_re.ko
-echo 'if_re_load="YES"' >>/boot/loader.conf.local
-reboot
-```
-
-* Once the zbox comes back up, you can verify that you are using the new module by running:
-
-```
-kldstat
-```
-
-* You should see something like: _2    1 0xffffffff82e3f000 80900    if_re.ko_
-
-**Extra Steps for USB3 Ethernet Adapter**
+**Extra Steps for USB3 Ethernet Adapter / Wifi Adapter**
 * If you've purchased the Ethernet Adapter, it should show up on it's own, you'll just need to set it up in "Interface -> Assignments"
 * Be sure that you "Enable" the interface, and you can call it WAN2, GUEST, whatever fits
 
@@ -175,7 +79,7 @@ kldstat
 
 **Miscellaneous**
 * System -> Advanced -> Miscellaneous
-* CHECK "Enable default gateway switching" (you can't do multi-wan without this)
+* IF you have multiple WAN ports... CHECK "Enable default gateway switching" (you can't do multi-wan without this)
 * Cryptographic Hardware -> Set to AES-NI and BSD Crypto Device (allows for better OVPN throughput)
 
 **OpenVPN**
@@ -203,17 +107,25 @@ kldstat
 
 **General Setup**
 * System -> General Setup
-* Consider if you want to check "Allow DNS server list to be overridden by DHCP on WAN"
+* I recommend that you UNCHECK "Allow DNS server list to be overridden by DHCP on WAN"
+* Under DNS Servers, I'd actually invite you to consider switching to [Quad9](https://www.quad9.net/about/) for your DNS services. They automatically block queries for known bad hosts. If you want to use their services, you would just set the DNS Servers as follows:
+
+| IP              | Hostname       | Gateway     |
+| --------------- | -------------- | ----------- |
+| 9.9.9.9         | dns.quad9.net. | WAN_DHCP... |
+| 149.112.112.112 | dns.quad9.net. | WAN_DHCP... |
+
 * I also prefer the "pfsense-dark" theme... that's purely preference
 * Most other things should be fine from the setup wizard
 
 **DNS Resolver**
 * Services -> DNS Resolver
 * You may (or may not want to turn this off) Some ISPs don't like it when you don't use their DNS servers. It's more secure to use your own though.
+* NOTE: I've been trying out DNS over TLS, since Quad9 now supports this... thus far I haven't had great results though, so I'll update here when I have something better to report.
 
 **Package Manager**
 * System -> Package Manager
-* **Recommend installs:** openvpn-client-export and suricata (if you want Intrusion Prevention)
+* **Recommend installs:** openvpn-client-export, pfBlockerNG, and suricata (if you want Intrusion Prevention)
 
 **Multi-WAN / Fail-Over**
 * System -> Routing -> Gateways
@@ -245,6 +157,15 @@ kldstat
 * Services -> Dynamic DNS 
 * Tons of services supported, and you can use this to have a DNS name to get into OpenVPN with (or something else)
 
+**pfBlockerNG IP / DNS Blocking**
+* While using Quad9 DNS will help you immensely, it may also make sense to handle some blacklisting of domains or IPs yourself. By doing so, you'll also be able to block most Ads at the NETWORK level. So even your phone / your fire stick, your whatever can't connect to doubleclick / other trackers. It also helps cut down on some of the noise, by blocking known bad actors outright at the IP level. 
+* The sections to look at to configure this are in: 
+Firewall -> pfBlockerNG -> IPv4 blocks
+Firewall -> pfBlockerNG -> DNSBL
+Firewall -> pfBlockerNG -> DNSBL Feeds
+Firewall -> pfBlockerNG -> DNSBL EasyList
+* There is a good example set of feeds [here](https://supratim-sanyal.blogspot.com/2017/04/pfsense-pfblockerng-ultimate-list-of-ip.html)
+
 **Suricata / Intrusion Prevention**
 * Services -> Suricata
  * Lots of configuration here, and it's the entire reason for the high-powered hardware
@@ -264,7 +185,7 @@ kldstat
  * Enable DNS Log (if you like)
  * Enable Stats Log (useful)
  * Block Offenders - You want this on. I recommend IPS Mode: "Legacy" on this hardware. I had random reboots with Inline on the RealTek hardware
- * Max Pending Packets: 2048 (the default is too low)
+ * Max Pending Packets: 1024 (this was the default at last check - I've recommened higher values in the past, but I've landed back here for stability reasons.)
 
 **WAN Categories**
  * CHECK Auto-enable rules required for checked flowbits

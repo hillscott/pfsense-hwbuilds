@@ -108,17 +108,25 @@ _I say "over" as I haven't reached the limits of this build yet_. I need to take
 
 **General Setup**
 * System -> General Setup
-* Consider if you want to check "Allow DNS server list to be overridden by DHCP on WAN"
+* I recommend that you UNCHECK "Allow DNS server list to be overridden by DHCP on WAN"
+* Under DNS Servers, I'd actually invite you to consider switching to [Quad9](https://www.quad9.net/about/) for your DNS services. They automatically block queries for known bad hosts. If you want to use their services, you would just set the DNS Servers as follows:
+
+| IP              | Hostname       | Gateway     |
+| --------------- | -------------- | ----------- |
+| 9.9.9.9         | dns.quad9.net. | WAN_DHCP... |
+| 149.112.112.112 | dns.quad9.net. | WAN_DHCP... |
+
 * I also prefer the "pfsense-dark" theme... that's purely preference
 * Most other things should be fine from the setup wizard
 
 **DNS Resolver**
 * Services -> DNS Resolver
 * You may (or may not want to turn this off) Some ISPs don't like it when you don't use their DNS servers. It's more secure to use your own though.
+* NOTE: I've been trying out DNS over TLS, since Quad9 now supports this... thus far I haven't had great results though, so I'll update here when I have something better to report.
 
 **Package Manager**
 * System -> Package Manager
-* **Recommend installs:** openvpn-client-export and suricata (if you want Intrusion Prevention)
+* **Recommend installs:** openvpn-client-export, pfBlockerNG, and suricata (if you want Intrusion Prevention)
 
 **Multi-WAN / Fail-Over**
 * System -> Routing -> Gateways
@@ -149,6 +157,15 @@ _I say "over" as I haven't reached the limits of this build yet_. I need to take
 **Dynamic DNS**
 * Services -> Dynamic DNS 
 * Tons of services supported, and you can use this to have a DNS name to get into OpenVPN with (or something else)
+
+**pfBlockerNG IP / DNS Blocking**
+* While using Quad9 DNS will help you immensely, it may also make sense to handle some blacklisting of domains or IPs yourself. By doing so, you'll also be able to block most Ads at the NETWORK level. So even your phone / your fire stick, your whatever can't connect to doubleclick / other trackers. It also helps cut down on some of the noise, by blocking known bad actors outright at the IP level. 
+* The sections to look at to configure this are in: 
+Firewall -> pfBlockerNG -> IPv4 blocks
+Firewall -> pfBlockerNG -> DNSBL
+Firewall -> pfBlockerNG -> DNSBL Feeds
+Firewall -> pfBlockerNG -> DNSBL EasyList
+* There is a good example set of feeds [here](https://supratim-sanyal.blogspot.com/2017/04/pfsense-pfblockerng-ultimate-list-of-ip.html)
 
 **Suricata / Intrusion Prevention**
 * Services -> Suricata
